@@ -95,7 +95,7 @@ h1 em, h2 em { color: var(--red); font-weight: 500; }
 .button-dark { background: var(--ink); color: white; }
 .products-more > span { color: var(--muted); font-size: 11px; }
 
-.story { position: relative; display: grid; isolation: isolate; overflow: hidden; background: #25171b; }
+.story { position: relative; display: grid; isolation: isolate; overflow: hidden; background: #25171b url("proprietario.jpeg") center / cover no-repeat; }
 .story-image, .story-shade, .story-inner { grid-area: 1 / 1; }
 .story-image { align-self: start; width: 100%; height: auto; object-fit: contain; }
 .story-shade { z-index: 1; background: linear-gradient(90deg, rgba(28,14,18,.74) 0%, rgba(28,14,18,.56) 38%, rgba(28,14,18,.18) 68%, rgba(28,14,18,.04) 100%); }
@@ -233,7 +233,7 @@ h1 em, h2 em { color: var(--red); font-weight: 500; }
   .hero .button { min-height: 31px; padding-inline: 8px; font-size: clamp(6px, 1.7vw, 8px); gap: 4px; letter-spacing: .02em; white-space: nowrap; }
   .hero-note { display: none; }
   .hero-shade { background: linear-gradient(90deg, rgba(72,0,19,.82) 0%, rgba(72,0,19,.57) 54%, rgba(72,0,19,.12) 100%); }
-  .hero-image { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: contain; object-position: center; }
+  .hero-image { align-self: start; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: contain; object-position: center; }
   .highlights-inner { grid-template-columns: repeat(2, 1fr); gap: 21px 10px; padding-block: 25px; }
   .highlight-item { min-width: 0; padding: 0 5px 0 0; border: 0; }
   .highlight-item:nth-child(2n) { padding-left: 8px; }
@@ -258,6 +258,8 @@ h1 em, h2 em { color: var(--red); font-weight: 500; }
   .products-more { flex-direction: column; gap: 10px; margin-top: 26px; }
   .products-more > span { font-size: 10px; }
   .story-shade { background: linear-gradient(180deg, rgba(28,14,18,.72) 0%, rgba(28,14,18,.62) 48%, rgba(37,23,27,.96) 100%); }
+  .story { height: calc(100vh - 72px); height: calc(100svh - 72px); min-height: 0; }
+  .story-image { align-self: stretch; width: 100%; height: 100%; aspect-ratio: auto; object-fit: contain; object-position: center; }
   .story-inner { width: calc(100% - 38px); align-items: flex-start; padding-block: 26px; }
   .story-copy { width: min(100%, 520px); }
   .story-copy .eyebrow { margin-bottom: 12px; font-size: 8px; letter-spacing: .13em; }
@@ -309,6 +311,18 @@ h1 em, h2 em { color: var(--red); font-weight: 500; }
   .hero-description { margin-bottom: 7px; font-size: 8px; }
   .hero-actions { gap: 4px; }
   .hero .button { min-height: 27px; padding-inline: 6px; font-size: 5.7px; gap: 3px; }
+}
+
+@media (max-width: 700px) and (orientation: landscape) {
+  .story { height: calc(100vh - 72px); height: calc(100svh - 72px); }
+  .hero-content { padding-block: 6px; }
+  .hero-copy { width: min(58%, 420px); }
+  .hero h1 { font-size: clamp(21px, 4vw, 30px); }
+  .hero-note { display: none; }
+  .story-inner { align-items: center; padding-block: 16px; }
+  .story-copy { width: min(76%, 520px); }
+  .story-copy h2 { font-size: clamp(28px, 5vw, 38px); }
+  .story-copy > p:not(.eyebrow) { font-size: 11px; line-height: 1.5; }
 }
 
 @media (prefers-reduced-motion: reduce) {
