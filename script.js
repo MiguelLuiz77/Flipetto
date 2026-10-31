@@ -20,19 +20,6 @@ nav?.querySelectorAll('a[href^="#"]').forEach((link) => {
 
 const revealItems = document.querySelectorAll('.reveal');
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const heroVideo = document.querySelector('.hero-video');
-
-if (heroVideo) {
-  heroVideo.muted = true;
-  heroVideo.defaultMuted = true;
-  heroVideo.volume = 0;
-  if (!reduceMotion) {
-    const startVideo = () => heroVideo.play().catch(() => {});
-    if (heroVideo.readyState >= 2) startVideo();
-    else heroVideo.addEventListener('canplay', startVideo, { once: true });
-  }
-}
-
 if ('IntersectionObserver' in window && !reduceMotion) {
   const observer = new IntersectionObserver((entries, currentObserver) => {
     entries.forEach((entry) => {
@@ -45,6 +32,72 @@ if ('IntersectionObserver' in window && !reduceMotion) {
   revealItems.forEach((item) => observer.observe(item));
 } else {
   revealItems.forEach((item) => item.classList.add('is-visible'));
+}
+
+const storySection = document.querySelector('.story');
+const storyTrack = storySection?.querySelector('.story-track');
+const storySlides = storyTrack ? [...storyTrack.querySelectorAll('.story-slide')] : [];
+
+if (storySection && storyTrack && storySlides.length > 1) {
+  const storyCount = storySection.querySelector('.story-count');
+  const previousButton = storySection.querySelector('[data-story-prev]');
+  const nextButton = storySection.querySelector('[data-story-next]');
+  let activeSlide = 0;
+  let autoplayTimer;
+
+  const showSlide = (nextIndex) => {
+    activeSlide = (nextIndex + storySlides.length) % storySlides.length;
+    storyTrack.style.transform = `translateX(-${activeSlide * 100}%)`;
+    storySlides.forEach((slide, index) => {
+      slide.setAttribute('aria-hidden', String(index !== activeSlide));
+    });
+    if (storyCount) storyCount.textContent = `${activeSlide + 1} / ${storySlides.length}`;
+  };
+
+  const stopAutoplay = () => {
+    window.clearInterval(autoplayTimer);
+    autoplayTimer = undefined;
+  };
+
+  const startAutoplay = () => {
+    if (reduceMotion || autoplayTimer || document.hidden) return;
+    autoplayTimer = window.setInterval(() => showSlide(activeSlide + 1), 4800);
+  };
+
+  const restartAutoplay = () => {
+    stopAutoplay();
+    startAutoplay();
+  };
+
+  previousButton?.addEventListener('click', () => {
+    showSlide(activeSlide - 1);
+    restartAutoplay();
+  });
+  nextButton?.addEventListener('click', () => {
+    showSlide(activeSlide + 1);
+    restartAutoplay();
+  });
+  storySection.addEventListener('pointerenter', stopAutoplay);
+  storySection.addEventListener('pointerleave', startAutoplay);
+  storySection.addEventListener('focusin', stopAutoplay);
+  storySection.addEventListener('focusout', (event) => {
+    if (!storySection.contains(event.relatedTarget)) startAutoplay();
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stopAutoplay();
+    else startAutoplay();
+  });
+
+  if ('IntersectionObserver' in window) {
+    const storyObserver = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) startAutoplay();
+      else stopAutoplay();
+    }, { threshold: 0.15 });
+    storyObserver.observe(storySection);
+  } else {
+    startAutoplay();
+  }
+  showSlide(0);
 }
 
 document.querySelector('#year').textContent = new Date().getFullYear();
